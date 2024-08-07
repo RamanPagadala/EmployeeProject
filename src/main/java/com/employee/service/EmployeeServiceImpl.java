@@ -80,9 +80,12 @@ public class EmployeeServiceImpl implements EmployeeService{
 	            responseList.add(response);
 	        }
 	        return responseList;
+	        
 	    }
+        
+       
 	    
-	    private double calculateYearlySalary(Employee employee, LocalDate startOfFinancialYear, LocalDate endOfFinancialYear) {
+	   private double calculateYearlySalary(Employee employee, LocalDate startOfFinancialYear, LocalDate endOfFinancialYear) {
 	        LocalDate doj = employee.getDoj();
 	        double monthlySalary = employee.getSalary();
 
@@ -94,9 +97,16 @@ public class EmployeeServiceImpl implements EmployeeService{
 	        if (monthsWorked < 0) {
 	            monthsWorked = 0;
 	        }
-
+	        double workedDaysSalary = 0.0;
+	        //calculating days
+			if (effectiveDOJ.getDayOfMonth() != 1) {
+				long daysInJoiningMonth = LocalDate.of(doj.getYear(), doj.getMonth(), 1).lengthOfMonth();
+				long daysWorkedInMonth = daysInJoiningMonth - doj.getDayOfMonth() + 1;
+				double dailySalary = monthlySalary / daysInJoiningMonth;
+				workedDaysSalary = dailySalary * daysWorkedInMonth;
+			}
 	        // Calculate the total salary based on months worked
-	        return monthlySalary * monthsWorked;
-	    }
+	        return monthlySalary * monthsWorked+ workedDaysSalary ;
+	    } 
 
 }
